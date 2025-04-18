@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,10 +49,31 @@ public class RestControllerTest {
 
     // url에 포함되어있는 특정 정보 얻어오기
     // @PathVariable: url에 포함되어있는 특정 값을 얻어옴
-    @GetMapping("/rest/posts/{bno}")
-    public String method4(@PathVariable String bno) {
+    @GetMapping("/rest/{userId}/posts/{bno}")
+    public String method4(@PathVariable int bno, @PathVariable String userId) {
         System.out.println("bno: " + bno);
+        System.out.println("userId: " + userId);
         return "ok";
     }
+
+    // 쿼리 스트링(쿼리 파라미터)로 전달되는 데이터 받기
+    // http://localhost:8181/rest/posts?category=title&sort=latest&keyword=야호
+    @GetMapping("/rest/posts")
+    public String method5(@RequestParam String category,
+                            @RequestParam("sort") String s,
+                            @RequestParam String keyword) {
+        System.out.println(category + " " + s + " " + keyword);
+        return "ok";
+    }
+
+    // 커맨드 개체(requeset DTO) 사용해서 쿼리 파라미터 처리하기
+    // 쿼리 파라미터의 key값과 DTO의 필드명을 맞추어야 setter가 정상적으로 호출된다
+    // http://localhost:8181/orders?orderNum=22&goods=구두&price=20000&amount=3...
+    @GetMapping("/orders")
+    public String method6(OrderDTO dto) {
+        System.out.println(dto);
+        return "ok";
+    }
+
 
 }
